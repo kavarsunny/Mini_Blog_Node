@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/header') %>
+        <title>
+            <%= blog.title %> | Blogify
+        </title>
+</head>
+
+<body>
+    <%- include('./partials/nav') %>
+
+        <div class="container-md my-4 mx-auto max-w-75">
+            <div class="container">
+                <p class="h1 mb-4">
+                    <%= blog.title %>
+                </p>
+
+                <div class="mb-4">
+                    <img src="<%= blog.createdBy.profileImageURL %>" alt="Profile Image"
+                        class="img-fluid rounded-circle" width="40px">
+                    <span class="ps-2">
+                        <%= blog.createdBy.fullName %>
+                    </span>
+                </div>
+
+                <% if (locals.user) { %>
+                    <% if (user._id==blog.createdBy._id) { %>
+                        <div class="mb-4">
+                            <a class="edit me-2" href="/blog/edit/<%= blog._id %>">Edit</a>
+                            <a class="delete" href="/blog/delete/<%= blog._id %>">Delete</a>
+                        </div>
+                        <% } %>
+                            <% } %>
+
+                                <div>
+                                    <img src="<%= blog.coverImageURL %>" alt="Cover Image"
+                                        class="img-fluid mb-4 pt-5 border-top" width="700px">
+                                    <p class="mt-4">
+                                        <%- blog.body.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'
+                                            ).replace(/\r\n/g, '<br>' ) %>
+                                    </p>
+
+                                </div>
+            </div>
+
+            <div class="container mt-4 border-top pt-4">
+                <p class="h4">Comments (<%= comments.length %>)</p>
+
+                <% if (locals.user) { %>
+                    <form action="/blog/comment/<%= blog._id %>" method="post">
+                        <div class="my-3">
+                            <input type="text" class="form-control" id="content" name="content"
+                                placeholder="Comment here...">
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-primary">Post</button>
+                    </form>
+                    <% } %>
+
+                        <div class="mt-4">
+                            <% comments.forEach((comment)=> { %>
+                                <div class="mb-3 d-flex flex-row">
+                                    <img src="<%= comment.createdBy.profileImageURL %>" alt="Profile Image"
+                                        class="img-fluid rounded-circle" width="40px">
+                                    <span class="ps-3">
+                                        <p class="mb-0"><strong>
+                                                <%= comment.createdBy.fullName %>
+                                            </strong>
+                                        </p>
+                                        <p class="mb-0">
+                                            <%= comment.content %>
+                                        </p>
+                                    </span>
+                                </div>
+                                <% }); %>
+                        </div>
+            </div>
+        </div>
+
+
+        <%- include('./partials/scripts') %>
+</body>
+
+</html>
